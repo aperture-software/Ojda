@@ -17,8 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <iostream>
+#include <GLFW/glfw3.h>
 
 int main()
 {
+    GLFWwindow* window;
+
     std::cout << "Ojda - OpenGL Viewer\n";
+    if (glfwInit() == GL_FALSE) {
+        std::cerr << "Could not initialize glfw.\n";
+        return -1;
+    }
+
+    window = glfwCreateWindow(1680, 1050, "Ojda - OpenGL Viewer", NULL, NULL);
+    glfwMakeContextCurrent(window);
+    while (!glfwWindowShouldClose(window)) {
+        glfwSwapBuffers(window);
+        glfwWaitEvents();
+    }
+
+    return 0;
 }
