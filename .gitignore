@@ -1,10 +1,14 @@
 *.a
+*.db
 *.dep
 *.exe
+*.ipch
 *.o
 *.obj
+*.opendb
 *.patch
 *.pdb
+*.suo
 arm
 arm64
 x64
