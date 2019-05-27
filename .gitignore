@@ -1,0 +1,11 @@
+*.a
+*.dep
+*.exe
+*.o
+*.obj
+*.patch
+*.pdb
+arm
+arm64
+x64
+x86
