@@ -1,5 +1,7 @@
 *.a
 *.db
+*.db-shm
+*.db-wal
 *.dep
 *.exe
 *.ipch

@@ -17,45 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <iostream>
+#include <vector>
 #include <windows.h>
 #include <gl/GLU.h>
 #include <GLFW/glfw3.h>
+#include <Eigen/Dense>
 
-typedef struct {
-    GLdouble x;
-    GLdouble y;
-    GLdouble z;
-} vect;
-
-// 3D cube object (normals + vertices)
-const vect n[] = {
-    { 0, -1, 0 },
-    { 0, 1, -0 },
-    { 1, 0, 0 },
-    { 0, -0, 1 },
-    { -1, 0, 0 },
-    { -0, -0, -1 },
-    { -0, -1, 0 },
-    { 0, 1, 0 },
-    { 1, 0, -0 },
-    { 0, 0, 1 },
-    { -1, 0, -0 },
-    { 0, 0, -1 },
-};
-const vect v[ARRAYSIZE(n)][3] = {
-    { { 1, -1, -1 }, { 1, -1, 1 }, { -1, -1, -1 } },
-    { { 1, 1, -1 }, { -1, 1, -1 }, { 1, 1, 1 } },
-    { { 1, -1, -1 }, { 1, 1, -1 }, { 1, -1, 1 } },
-    { { 1, -1, 1 }, { 1, 1, 1 }, { -1, -1, 1 } },
-    { { -1, -1, 1 }, { -1, 1, 1 }, { -1, -1, -1 } },
-    { { 1, 1, -1 }, { 1, -1, -1 }, { -1, 1, -1 } },
-    { { 1, -1, 1 }, { -1, -1, 1 }, { -1, -1, -1 } },
-    { { -1, 1, -1 }, { -1, 1, 1 }, { 1, 1, 1 } },
-    { { 1, 1, -1 }, { 1, 1, 1 }, { 1, -1, 1 } },
-    { { 1, 1, 1 }, { -1, 1, 1 }, { -1, -1, 1 } },
-    { { -1, 1, 1 }, { -1, 1, -1 }, { -1, -1, -1 } },
-    { { 1, -1, -1 }, { -1, -1, -1 }, { -1, 1, -1 } },
-};
+#include "Cube.h"
 
 const GLfloat ambient_light[] = { 0.1f, 0.1f, 0.1f, 1.0f };
 const GLfloat diffuse_light[] = { 1.0f, 1.0f, 1.0f, 0.0f };
@@ -68,11 +36,12 @@ int main()
     const GLdouble fovy = 40.0;
     const GLdouble zNear = 1.0;
     const GLdouble zFar = 10.0;
-    const vect eye = { 2.0, 2.5, 5.0 };
-    const vect center = { 0.0, 0.0, 0.0 };
-    const vect up = { 0.15, 0.9, 0.45 };
+    const Eigen::Vector3d eye = { 2.0, 2.5, 5.0 };
+    const Eigen::Vector3d center = { 0.0, 0.0, 0.0 };
+    const Eigen::Vector3d up = { 0.15, 0.9, 0.45 };
 
     GLFWwindow* window;
+    Cube* cube = new Cube();
 
     std::cout << "Ojda - OpenGL Viewer\n";
     if (glfwInit() == GL_FALSE) {
@@ -103,18 +72,11 @@ int main()
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
-        gluLookAt(eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
+        gluLookAt(eye.x(), eye.y(), eye.z(), center.x(), center.y(), center.z(), up.x(), up.y(), up.z());
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        for (int i = 0; i < ARRAYSIZE(n); i++) {
-            glBegin(GL_TRIANGLES);
-            glNormal3d(n[i].x, n[i].y, n[i].z);
-            for (int j = 0; j < 3; j++) {
-                glVertex3d(v[i][j].x, v[i][j].y, v[i][j].z);
-            }
-            glEnd();
-        }
+        cube->glDraw();
 
         glfwSwapBuffers(window);
         glfwWaitEvents();
