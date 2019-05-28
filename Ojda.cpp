@@ -17,10 +17,61 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <iostream>
+#include <windows.h>
+#include <gl/GLU.h>
 #include <GLFW/glfw3.h>
+
+typedef struct {
+    GLdouble x;
+    GLdouble y;
+    GLdouble z;
+} vect;
+
+// 3D cube object (normals + vertices)
+const vect n[] = {
+    { 0, -1, 0 },
+    { 0, 1, -0 },
+    { 1, 0, 0 },
+    { 0, -0, 1 },
+    { -1, 0, 0 },
+    { -0, -0, -1 },
+    { -0, -1, 0 },
+    { 0, 1, 0 },
+    { 1, 0, -0 },
+    { 0, 0, 1 },
+    { -1, 0, -0 },
+    { 0, 0, -1 },
+};
+const vect v[ARRAYSIZE(n)][3] = {
+    { { 1, -1, -1 }, { 1, -1, 1 }, { -1, -1, -1 } },
+    { { 1, 1, -1 }, { -1, 1, -1 }, { 1, 1, 1 } },
+    { { 1, -1, -1 }, { 1, 1, -1 }, { 1, -1, 1 } },
+    { { 1, -1, 1 }, { 1, 1, 1 }, { -1, -1, 1 } },
+    { { -1, -1, 1 }, { -1, 1, 1 }, { -1, -1, -1 } },
+    { { 1, 1, -1 }, { 1, -1, -1 }, { -1, 1, -1 } },
+    { { 1, -1, 1 }, { -1, -1, 1 }, { -1, -1, -1 } },
+    { { -1, 1, -1 }, { -1, 1, 1 }, { 1, 1, 1 } },
+    { { 1, 1, -1 }, { 1, 1, 1 }, { 1, -1, 1 } },
+    { { 1, 1, 1 }, { -1, 1, 1 }, { -1, -1, 1 } },
+    { { -1, 1, 1 }, { -1, 1, -1 }, { -1, -1, -1 } },
+    { { 1, -1, -1 }, { -1, -1, -1 }, { -1, 1, -1 } },
+};
+
+const GLfloat ambient_light[] = { 0.1f, 0.1f, 0.1f, 1.0f };
+const GLfloat diffuse_light[] = { 1.0f, 1.0f, 1.0f, 0.0f };
+const GLfloat position_light[] = { 0.0f, 0.0f, 1000.0f, 0.0f };
+const GLfloat specular_light[] = { 0.4f, 0.4f, 0.4f, 1.0f };
 
 int main()
 {
+    const int window_width = 1680, window_height = 1050;
+    const GLdouble fovy = 40.0;
+    const GLdouble zNear = 1.0;
+    const GLdouble zFar = 10.0;
+    const vect eye = { 2.0, 2.5, 5.0 };
+    const vect center = { 0.0, 0.0, 0.0 };
+    const vect up = { 0.15, 0.9, 0.45 };
+
     GLFWwindow* window;
 
     std::cout << "Ojda - OpenGL Viewer\n";
@@ -29,9 +80,42 @@ int main()
         return -1;
     }
 
-    window = glfwCreateWindow(1680, 1050, "Ojda - OpenGL Viewer", NULL, NULL);
+    window = glfwCreateWindow(window_width, window_height, "Ojda - OpenGL Viewer", NULL, NULL);
     glfwMakeContextCurrent(window);
+
+    // Lighting setup
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambient_light);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuse_light);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular_light);
+    glLightfv(GL_LIGHT0, GL_POSITION, position_light);
+    glLightModelf(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_DEPTH_TEST);
+
+    glClearColor((GLclampf)0.1, (GLclampf)0.3, (GLclampf) 0.7, (GLclampf)1.0);
+
     while (!glfwWindowShouldClose(window)) {
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        gluPerspective(fovy, (GLdouble)window_width / (GLdouble)window_height, zNear, zFar);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        gluLookAt(eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z);
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        for (int i = 0; i < ARRAYSIZE(n); i++) {
+            glBegin(GL_TRIANGLES);
+            glNormal3d(n[i].x, n[i].y, n[i].z);
+            for (int j = 0; j < 3; j++) {
+                glVertex3d(v[i][j].x, v[i][j].y, v[i][j].z);
+            }
+            glEnd();
+        }
+
         glfwSwapBuffers(window);
         glfwWaitEvents();
     }
