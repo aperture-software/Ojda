@@ -15,15 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="../Ojda.cpp">
+    <ClCompile Include="..\Ojda.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="../Cube.cpp">
+    <ClCompile Include="..\Cube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Renderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../Cube.h">
+    <ClInclude Include="..\Cube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

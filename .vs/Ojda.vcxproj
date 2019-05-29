@@ -309,8 +309,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="../Ojda.cpp" />
-    <ClCompile Include="../Cube.cpp" />
+    <ClCompile Include="..\Ojda.cpp" />
+    <ClCompile Include="..\Cube.cpp" />
+    <ClCompile Include="..\Renderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="glfw.vcxproj">
@@ -318,7 +319,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="../Cube.h" />
+    <ClInclude Include="..\Cube.h" />
+    <ClInclude Include="..\Renderer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

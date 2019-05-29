@@ -19,19 +19,28 @@
 
 #pragma once
 
-#include <vector>
 #include <windows.h>
-#include <gl/GLU.h>
-#include <Eigen/Dense>
+#include <GLFW/glfw3.h>
 
-using namespace Eigen;
+#include "Cube.h"
 
-class Cube {
-public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Cube();
-    void glDraw() const;
+class Renderer
+{
 private:
-    Vector3f getNormal(const int index) const;
-    std::vector<Matrix3f> mFace;
+    const GLdouble fovy = 40.0;
+    const GLdouble zNear = 1.0;
+    const GLdouble zFar = 10.0;
+    const Vector3d eye = { 2.0, 2.5, 5.0 };
+    const Vector3d center = { 0.0, 0.0, 0.0 };
+    const Vector3d up = { 0.15, 0.9, 0.45 };
+
+    Cube* mModel;
+    GLFWwindow* mWindow;
+
+public:
+    int mWindowWidth = 1680, mWindowHeight = 1050;
+
+    Renderer(GLFWwindowsizefun fResize);
+    void Paint();
+    inline GLFWwindow* getWindow(void) const { return mWindow; }
 };

@@ -21,67 +21,67 @@
 
 Cube::Cube()
 {
-    Eigen::Matrix3d m;
+    Matrix3f m;
     m << 1.0, -1.0, -1.0,
         1.0, -1.0, 1.0,
         -1.0, -1.0, -1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, 1.0, -1.0,
         -1.0, 1.0, -1.0,
         1.0, 1.0, 1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, -1.0, -1.0,
         1.0, 1.0, -1.0,
         1.0, -1.0, 1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, -1.0, 1.0,
         1.0, 1.0, 1.0,
         -1.0, -1.0, 1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << -1.0, -1.0, 1.0,
         -1.0, 1.0, 1.0,
         -1.0, -1.0, -1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, 1.0, -1.0,
         1.0, -1.0, -1.0,
         -1.0, 1.0, 1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, -1.0, 1.0,
         -1.0, -1.0, 1.0,
         -1.0, -1.0, -1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << -1.0, 1.0, -1.0,
         -1.0, 1.0, 1.0,
         1.0, 1.0, 1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, 1.0, -1.0,
         1.0, 1.0, 1.0,
         1.0, -1.0, 1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, 1.0, 1.0,
         -1.0, 1.0, 1.0,
         -1.0, -1.0, 1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << -1.0, 1.0, 1.0,
         -1.0, 1.0, -1.0,
         -1.0, -1.0, -1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
     m << 1.0, -1.0, -1.0,
         -1.0, -1.0, -1.0,
         -1.0, 1.0, -1.0;
-    this->m_face.push_back(m);
+    this->mFace.push_back(m);
 }
 
-Eigen::Vector3d Cube::getNormal(const int index) const
+Vector3f Cube::getNormal(const int index) const
 {
-    if (index > this->m_face.size())
-        return Eigen::Vector3d();
+    if (index > this->mFace.size())
+        return Vector3f();
 
-    Eigen::Matrix3d m = this->m_face[index];
-    Eigen::Vector3d v[3] = { m.row(0), m.row(1), m.row(2) };
+    Matrix3f m = this->mFace[index];
+    Vector3f v[3] = { m.row(0), m.row(1), m.row(2) };
     v[1] -= v[0];
     v[2] -= v[0];
-    Eigen::Vector3d n = v[1].cross(v[2]);
+    Vector3f n = v[1].cross(v[2]);
     n.normalize();
 
     return n;
@@ -89,12 +89,12 @@ Eigen::Vector3d Cube::getNormal(const int index) const
 
 void Cube::glDraw() const
 {
-    for (int i = 0; i < m_face.size(); i++) {
+    for (int i = 0; i < mFace.size(); i++) {
         glBegin(GL_TRIANGLES);
-        Eigen::Vector3d n = this->getNormal(i);
-        glNormal3d(n.x(), n.y(), n.z());
+        Vector3f n = this->getNormal(i);
+        glNormal3f(n.x(), n.y(), n.z());
         for (int j = 0; j < 3; j++)
-            glVertex3d(this->m_face[i].row(j).x(), this->m_face[i].row(j).y(), this->m_face[i].row(j).z());
+            glVertex3f(this->mFace[i].row(j).x(), this->mFace[i].row(j).y(), this->mFace[i].row(j).z());
         glEnd();
     }
 }
