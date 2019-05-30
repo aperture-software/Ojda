@@ -60,3 +60,22 @@ void Renderer::Paint()
     mModel->glDraw();
     glfwSwapBuffers(mWindow);
 }
+
+void Renderer::Zoom(float delta)
+{
+    mCamera->Zoom(delta);
+}
+
+void Renderer::Rotate(float xpos, float ypos, bool update_only = false)
+{
+    const Vector2f currentPos = { (float)mMouseX, (float)mMouseY };
+    const Vector2f targetPos = {
+        ((xpos * 2.0f) - mWindowWidth) / min(mWindowWidth, mWindowHeight),
+        -1.0f * ((ypos * 2.0f) - mWindowHeight) / min(mWindowWidth, mWindowHeight) };
+
+    if (!update_only)
+        mCamera->Rotate(currentPos, targetPos);
+
+    mMouseX = targetPos.x();
+    mMouseY = targetPos.y();
+}

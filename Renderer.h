@@ -21,9 +21,12 @@
 
 #include <windows.h>
 #include <GLFW/glfw3.h>
+#include <Eigen/Eigen>
 
 #include "Camera.h"
 #include "Cube.h"
+
+using namespace Eigen;
 
 class Renderer
 {
@@ -31,11 +34,14 @@ private:
     Cube* mModel;
     Camera* mCamera;
     GLFWwindow* mWindow;
+    float mMouseX, mMouseY;
 
 public:
     int mWindowWidth = 1680, mWindowHeight = 1050;
 
     Renderer(const char* title, GLFWwindowsizefun fResize);
     void Paint();
+    void Rotate(float xpos, float ypos, bool update_only);
+    void Zoom(float delta);
     inline GLFWwindow* getWindow(void) const { return mWindow; }
 };

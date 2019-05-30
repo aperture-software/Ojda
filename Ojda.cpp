@@ -18,10 +18,31 @@
  */
 
 #include <iostream>
-#include "Dbg.h"
 #include "Renderer.h"
 
 Renderer* render;
+
+// Override std::cout and std::cerr to get messages sent to the Visual Studio output window
+#if defined(_WIN32)
+class vs_stream : std::basic_streambuf<char, std::char_traits<char>>
+{
+protected:
+    std::streamsize xsputn (const std::char_traits<char>::char_type* s, std::streamsize n)
+    {
+        OutputDebugStringA(s);
+        return n;
+    }
+
+    std::char_traits<char>::int_type overflow (std::char_traits<char>::int_type c)
+    {
+        char str[2]; str[0] = c; str[1] = 0;
+        OutputDebugStringA(str);
+        return std::char_traits<char>::int_type(c);
+    }
+};
+
+typedef std::basic_streambuf<char, std::char_traits<char>> sbuf_char;
+#endif
 
 // GLFW callbacks
 void glfw_error(int error, const char* description)
@@ -38,6 +59,13 @@ void glfw_resize(GLFWwindow* window, int w, int h)
     render->Paint();
 }
 
+void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    glfwMakeContextCurrent(window);
+    render->Zoom((float)(3.0 * yoffset));
+    render->Paint();
+}
+
 int main()
 {
     std::cout << "Ojda - OpenGL Viewer\n";
@@ -49,18 +77,35 @@ int main()
 
     render = new Renderer("Ojda - OpenGL Viewer", glfw_resize);
     GLFWwindow* window = render->getWindow();
+    glfwSetScrollCallback(window, glfw_scroll_callback);
 
     while (!glfwWindowShouldClose(window)) {
         render->Paint();
         glfwWaitEvents();
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        render->Rotate((float)xpos, (float)ypos,
+            (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_RELEASE));
     }
 
     return 0;
 }
 
-#if defined(WIN32)
+#if defined(_WIN32)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    return main();
+    vs_stream vs;
+    sbuf_char *cout_buf = std::cout.rdbuf();
+    sbuf_char *cerr_buf = std::cerr.rdbuf();
+
+    std::cout.rdbuf((sbuf_char *)&vs);
+    std::cerr.rdbuf((sbuf_char *)&vs);
+
+    int r = main();
+
+    std::cout.rdbuf(cout_buf);
+    std::cerr.rdbuf(cerr_buf);
+
+    return r;
 }
 #endif

@@ -1,7 +1,7 @@
 /*
  * Ojda: OpenGL Viewer
  *
- * Copyright Â© 2019 Aperture Software
+ * Copyright © 2019 Aperture Software
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,16 +30,24 @@ typedef struct {
 class Camera
 {
 private:
-    Vector3f mEye = { 2.0f, 2.5f, 5.0f };
+    const float mProjectionSphereRadius = 0.8f;
+
+    Vector3f mEye = { 0.0f, 0.0f, 10.0f };
     Vector3f mCenter = { 0.0f, 0.0f, 0.0f };
-    Vector3f mUp = { 0.15f, 0.9f, 0.45f };
-    float fovy = 40.0f;
-    float zNear = 1.0f;
-    float zFar = 10.0f;
-    float mDistToCenter;
+    Vector3f mUp = { 0.0f, 1.0f, 0.0f };
+    float mFovY = 40.0f;
+    float mNearDist = 1.0f;
+    float mFarDist = 10.0f;
+    float mDistToCenter = 1.0f;
     float mBoundingSphereRadius;
+    Quaternionf mRotation = Quaternionf(1.0f, 0.0f, 0.0f, 0.0f);
+
+    void ProjectToSphere(Vector3f& point) const;
+
 public:
     Camera(const BoundingBoxf bbox);
     void Perspective(float ar) const;
-    void LookAt() const;
+    void LookAt();
+    void Zoom(float delta);
+    void Rotate(const Vector2f oldpos, const Vector2f newpos);
 };
