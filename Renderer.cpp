@@ -19,12 +19,20 @@
 
 #include <windows.h>
 #include <Renderer.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
+#include "Icon.h"
 
 Renderer::Renderer(GLFWwindowsizefun fResize)
 {
     mModel = new Cube();
 
+    int numberOfImages = 1;
+    GLFWimage images[1];
+    images[0].pixels = stbi_load_from_memory(icon, sizeof(icon), &images[0].width, &images[0].height, 0, 4);
+
     mWindow = glfwCreateWindow(mWindowWidth, mWindowHeight, "Ojda - OpenGL Viewer", NULL, NULL);
+    glfwSetWindowIcon(mWindow, 1, images);
     glfwSetWindowSizeCallback(mWindow, fResize);
     glfwMakeContextCurrent(mWindow);
 }
