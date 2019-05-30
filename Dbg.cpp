@@ -17,30 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
 #include <windows.h>
-#include <GLFW/glfw3.h>
+#include "Dbg.h"
 
-#include "Cube.h"
-
-class Renderer
+std::basic_ostream<char, std::char_traits<char>> & operator<<(std::basic_ostream<char, std::char_traits<char>> & os, const char* str)
 {
-private:
-    const GLdouble fovy = 40.0;
-    const GLdouble zNear = 1.0;
-    const GLdouble zFar = 10.0;
-    const Vector3d eye = { 2.0, 2.5, 5.0 };
-    const Vector3d center = { 0.0, 0.0, 0.0 };
-    const Vector3d up = { 0.15, 0.9, 0.45 };
+    OutputDebugStringA(str);
+    return os;
+}
 
-    Cube* mModel;
-    GLFWwindow* mWindow;
-
-public:
-    int mWindowWidth = 1680, mWindowHeight = 1050;
-
-    Renderer(const char* title, GLFWwindowsizefun fResize);
-    void Paint();
-    inline GLFWwindow* getWindow(void) const { return mWindow; }
-};
+std::basic_ostream<char, std::char_traits<char>> & endl(std::basic_ostream<char, std::char_traits<char>> & os)
+{
+    OutputDebugStringA("\n");
+    return os;
+}

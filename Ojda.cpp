@@ -18,6 +18,7 @@
  */
 
 #include <iostream>
+#include "Dbg.h"
 #include "Renderer.h"
 
 Renderer* render;
@@ -39,8 +40,6 @@ void glfw_resize(GLFWwindow* window, int w, int h)
 
 int main()
 {
-    GLFWwindow* window;
-
     std::cout << "Ojda - OpenGL Viewer\n";
     glfwSetErrorCallback(glfw_error);
     if (glfwInit() == GL_FALSE) {
@@ -48,8 +47,8 @@ int main()
         return -1;
     }
 
-    render = new Renderer(glfw_resize);
-    window = render->getWindow();
+    render = new Renderer("Ojda - OpenGL Viewer", glfw_resize);
+    GLFWwindow* window = render->getWindow();
 
     while (!glfwWindowShouldClose(window)) {
         render->Paint();
@@ -58,3 +57,10 @@ int main()
 
     return 0;
 }
+
+#if defined(WIN32)
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    return main();
+}
+#endif
