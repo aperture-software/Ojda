@@ -34,6 +34,8 @@ Renderer::Renderer(const char* title, GLFWwindowsizefun fResize)
     glfwSetWindowSizeCallback(mWindow, fResize);
     glfwMakeContextCurrent(mWindow);
 
+    BoundingBoxf bbox = { {-1.0, -1.0, -1.0}, {1.0, 1.0, 1.0} };
+    mCamera = new Camera(bbox);
     mModel = new Cube();
 }
 
@@ -46,11 +48,11 @@ void Renderer::Paint()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    gluPerspective(fovy, (GLdouble)mWindowWidth / (GLdouble)mWindowHeight, zNear, zFar);
+    mCamera->Perspective((float)mWindowWidth / (float)mWindowHeight);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(eye.x(), eye.y(), eye.z(), center.x(), center.y(), center.z(), up.x(), up.y(), up.z());
+    mCamera->LookAt();
 
     glClearColor(0.1f, 0.3f, 0.7f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

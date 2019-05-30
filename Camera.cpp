@@ -17,21 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
-#include <vector>
+#define _USE_MATH_DEFINES
+#include <math.h>
 #include <windows.h>
 #include <gl/GLU.h>
-#include <Eigen/Eigen>
 
-using namespace Eigen;
+#include "Camera.h"
 
-class Cube {
-public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Cube();
-    void glDraw() const;
-private:
-    Vector3f getNormal(const int index) const;
-    std::vector<Matrix3f> mFace;
-};
+Camera::Camera(const BoundingBoxf bbox)
+{
+    mBoundingSphereRadius = (bbox.min - bbox.max).norm() * 0.5f;
+    mCenter = (bbox.min + bbox.max) * 0.5f;
+    mDistToCenter = mBoundingSphereRadius / std::sin(fovy / 360.0f * (float)M_PI);
+    zNear = mDistToCenter - mBoundingSphereRadius;
+    zFar = mDistToCenter + mBoundingSphereRadius;
+}
+
+void Camera::Perspective(float ar) const
+{
+    gluPerspective(fovy, ar, zNear, zFar);
+}
+
+void Camera::LookAt() const
+{
+    gluLookAt(mEye.x(), mEye.y(), mEye.z(), mCenter.x(), mCenter.y(), mCenter.z(), mUp.x(), mUp.y(), mUp.z());
+}

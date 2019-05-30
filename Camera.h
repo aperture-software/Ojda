@@ -16,22 +16,30 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #pragma once
 
-#include <vector>
-#include <windows.h>
-#include <gl/GLU.h>
 #include <Eigen/Eigen>
 
 using namespace Eigen;
 
-class Cube {
-public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Cube();
-    void glDraw() const;
+typedef struct {
+    Vector3f min;
+    Vector3f max;
+} BoundingBoxf;
+
+class Camera
+{
 private:
-    Vector3f getNormal(const int index) const;
-    std::vector<Matrix3f> mFace;
+    Vector3f mEye = { 2.0f, 2.5f, 5.0f };
+    Vector3f mCenter = { 0.0f, 0.0f, 0.0f };
+    Vector3f mUp = { 0.15f, 0.9f, 0.45f };
+    float fovy = 40.0f;
+    float zNear = 1.0f;
+    float zFar = 10.0f;
+    float mDistToCenter;
+    float mBoundingSphereRadius;
+public:
+    Camera(const BoundingBoxf bbox);
+    void Perspective(float ar) const;
+    void LookAt() const;
 };

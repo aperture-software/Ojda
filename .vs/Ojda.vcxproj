@@ -309,6 +309,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Camera.cpp" />
     <ClCompile Include="..\Dbg.cpp" />
     <ClCompile Include="..\Ojda.cpp" />
     <ClCompile Include="..\Cube.cpp" />
@@ -320,6 +321,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Camera.h" />
     <ClInclude Include="..\Cube.h" />
     <ClInclude Include="..\Dbg.h" />
     <ClInclude Include="..\Icon.h" />
