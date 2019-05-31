@@ -19,7 +19,9 @@
 
 #pragma once
 
+#if defined(_WIN32)
 #include <windows.h>
+#endif
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"

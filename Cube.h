@@ -20,8 +20,12 @@
 #pragma once
 
 #include <vector>
+#if defined(_WIN32)
 #include <windows.h>
 #include <gl/GLU.h>
+#else
+#include <GL/glu.h>
+#endif
 #include <Eigen/Eigen>
 
 using namespace Eigen;

@@ -1,22 +1,24 @@
 ifeq ($(OS),Windows_NT)
   ifneq ($(shell uname -o),Msys)
-    RM          := del /q
+    RM         := del /q
   else
-    RM          := rm -f
+    RM         := rm -f
   endif
-  EXE           := .exe
-  LDFLAGS       := -static-libgcc -static-libstdc++ -static -mwindows
+  EXE          := .exe
+  LDFLAGS      := -static-libgcc -static-libstdc++ -static -mwindows
+  LIBS         := -lglu32 -lopengl32 -lgdi32 -lglfw3
+else
+  LIBS         := -lGLU -lGL -lglfw3 -lpthread -lX11 -ldl
 endif
 
 TOPDIR         := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
 GLFW_DIR        = $(TOPDIR)/glfw
 GLFW_INC        = $(GLFW_DIR)/include
 GLFW_LIB        = $(GLFW_DIR)/liglfw3.a
-TARGET          = ojda$(EXE)
+TARGET          = Ojda$(EXE)
 SRC             = Camera.cpp Cube.cpp Ojda.cpp Renderer.cpp
 OBJS            = $(SRC:.cpp=.o)
 DEPS            = $(GLFW_LIB)
-LIBS           += -lglfw3 -lglu32 -lopengl32 -lgdi32
 LIBDIRS        += -L$(GLFW_DIR)
 
 CXX             = g++
