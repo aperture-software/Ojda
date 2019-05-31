@@ -72,7 +72,7 @@ Cube::Cube()
     this->mFace.push_back(m);
 }
 
-Vector3f Cube::getNormal(const int index) const
+Vector3f Cube::getNormal(const size_t index) const
 {
     if (index > this->mFace.size())
         return Vector3f();
@@ -89,7 +89,7 @@ Vector3f Cube::getNormal(const int index) const
 
 void Cube::glDraw() const
 {
-    for (int i = 0; i < mFace.size(); i++) {
+    for (size_t i = 0; i < mFace.size(); i++) {
         glBegin(GL_TRIANGLES);
         Vector3f n = this->getNormal(i);
         glNormal3f(n.x(), n.y(), n.z());

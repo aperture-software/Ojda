@@ -20,6 +20,8 @@
 #include <iostream>
 #include "Renderer.h"
 
+#define UNUSED(expr) do { (void)(expr); } while (0)
+
 Renderer* render;
 
 // Override std::cout and std::cerr to get messages sent to the Visual Studio output window
@@ -47,7 +49,7 @@ typedef std::basic_streambuf<char, std::char_traits<char>> sbuf_char;
 // GLFW callbacks
 void glfw_error(int error, const char* description)
 {
-    std::cerr << "GLFW error: " << description << "\n";
+    std::cerr << "GLFW[" << error << "]: " << description << "\n";
 }
 
 void glfw_resize(GLFWwindow* window, int w, int h)
@@ -61,6 +63,7 @@ void glfw_resize(GLFWwindow* window, int w, int h)
 
 void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
+    UNUSED(xoffset);
     glfwMakeContextCurrent(window);
     render->Zoom((float)(3.0 * yoffset));
     render->Paint();
@@ -94,6 +97,10 @@ int main()
 #if defined(_WIN32)
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
+    UNUSED(hInstance);
+    UNUSED(hPrevInstance);
+    UNUSED(lpCmdLine);
+    UNUSED(nCmdShow);
     vs_stream vs;
     sbuf_char *cout_buf = std::cout.rdbuf();
     sbuf_char *cerr_buf = std::cerr.rdbuf();

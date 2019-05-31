@@ -21,7 +21,6 @@
 
 #include <windows.h>
 #include <GLFW/glfw3.h>
-#include <Eigen/Eigen>
 
 #include "Camera.h"
 #include "Cube.h"

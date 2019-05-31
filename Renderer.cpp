@@ -17,15 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <windows.h>
+#include <algorithm>
 #include <Renderer.h>
+#include <Eigen/Eigen>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #include "Icon.h"
 
 Renderer::Renderer(const char* title, GLFWwindowsizefun fResize)
 {
-    int numberOfImages = 1;
     GLFWimage images[1];
     images[0].pixels = stbi_load_from_memory(icon, sizeof(icon), &images[0].width, &images[0].height, 0, 4);
 
@@ -70,8 +70,8 @@ void Renderer::Rotate(float xpos, float ypos, bool update_only = false)
 {
     const Vector2f currentPos = { (float)mMouseX, (float)mMouseY };
     const Vector2f targetPos = {
-        ((xpos * 2.0f) - mWindowWidth) / min(mWindowWidth, mWindowHeight),
-        -1.0f * ((ypos * 2.0f) - mWindowHeight) / min(mWindowWidth, mWindowHeight) };
+        ((xpos * 2.0f) - mWindowWidth) / (std::min)(mWindowWidth, mWindowHeight),
+        -1.0f * ((ypos * 2.0f) - mWindowHeight) / (std::min)(mWindowWidth, mWindowHeight) };
 
     if (!update_only)
         mCamera->Rotate(currentPos, targetPos);

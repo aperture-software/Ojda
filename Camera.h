@@ -1,7 +1,7 @@
 /*
  * Ojda: OpenGL Viewer
  *
- * Copyright © 2019 Aperture Software
+ * Copyright Â© 2019 Aperture Software
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 using namespace Eigen;
 
 typedef struct {
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     Vector3f min;
     Vector3f max;
 } BoundingBoxf;
@@ -45,6 +46,7 @@ private:
     void ProjectToSphere(Vector3f& point) const;
 
 public:
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     Camera(const BoundingBoxf bbox);
     void Perspective(float ar) const;
     void LookAt();

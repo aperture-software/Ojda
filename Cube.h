@@ -27,11 +27,11 @@
 using namespace Eigen;
 
 class Cube {
+private:
+    Vector3f getNormal(const size_t index) const;
+    std::vector<Matrix3f> mFace;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     Cube();
     void glDraw() const;
-private:
-    Vector3f getNormal(const int index) const;
-    std::vector<Matrix3f> mFace;
 };
