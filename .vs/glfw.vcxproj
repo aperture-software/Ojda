@@ -35,30 +35,30 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\glfw\src\context.c" />
-    <ClCompile Include="..\glfw\src\egl_context.c" />
-    <ClCompile Include="..\glfw\src\init.c" />
-    <ClCompile Include="..\glfw\src\input.c" />
-    <ClCompile Include="..\glfw\src\monitor.c" />
-    <ClCompile Include="..\glfw\src\osmesa_context.c" />
-    <ClCompile Include="..\glfw\src\vulkan.c" />
-    <ClCompile Include="..\glfw\src\wgl_context.c" />
-    <ClCompile Include="..\glfw\src\win32_init.c" />
-    <ClCompile Include="..\glfw\src\win32_joystick.c" />
-    <ClCompile Include="..\glfw\src\win32_monitor.c" />
-    <ClCompile Include="..\glfw\src\win32_thread.c" />
-    <ClCompile Include="..\glfw\src\win32_time.c" />
-    <ClCompile Include="..\glfw\src\win32_window.c" />
-    <ClCompile Include="..\glfw\src\window.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\context.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\egl_context.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\init.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\input.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\monitor.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\osmesa_context.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\vulkan.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\wgl_context.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\win32_init.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\win32_joystick.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\win32_monitor.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\win32_thread.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\win32_time.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\win32_window.c" />
+    <ClCompile Include="..\3rd_party\glfw\src\window.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\glfw\src\egl_context.h" />
-    <ClInclude Include="..\glfw\src\internal.h" />
-    <ClInclude Include="..\glfw\src\mappings.h" />
-    <ClInclude Include="..\glfw\src\osmesa_context.h" />
-    <ClInclude Include="..\glfw\src\wgl_context.h" />
-    <ClInclude Include="..\glfw\src\win32_joystick.h" />
-    <ClInclude Include="..\glfw\src\win32_platform.h" />
+    <ClInclude Include="..\3rd_party\glfw\src\egl_context.h" />
+    <ClInclude Include="..\3rd_party\glfw\src\internal.h" />
+    <ClInclude Include="..\3rd_party\glfw\src\mappings.h" />
+    <ClInclude Include="..\3rd_party\glfw\src\osmesa_context.h" />
+    <ClInclude Include="..\3rd_party\glfw\src\wgl_context.h" />
+    <ClInclude Include="..\3rd_party\glfw\src\win32_joystick.h" />
+    <ClInclude Include="..\3rd_party\glfw\src\win32_platform.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

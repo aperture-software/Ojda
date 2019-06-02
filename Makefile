@@ -24,19 +24,21 @@ ifeq ($(uname_S), Darwin)
 endif
 
 TOPDIR         := $(patsubst %/,%,$(dir $(lastword $(MAKEFILE_LIST))))
-GLFW_DIR        = $(TOPDIR)/glfw
+SRC_DIR         = $(TOPDIR)/src
+3RD_PART_DIR    = $(TOPDIR)/3rd_party
+GLFW_DIR        = $(3RD_PART_DIR)/glfw
 GLFW_INC        = $(GLFW_DIR)/include
 GLFW_LIB        = $(GLFW_DIR)/liglfw3.a
 TARGET          = Ojda$(EXE)
-SRC             = Camera.cpp Cube.cpp Ojda.cpp Renderer.cpp
+SRC             = $(SRC_DIR)/Camera.cpp $(SRC_DIR)/Cube.cpp $(SRC_DIR)/Ojda.cpp $(SRC_DIR)/Renderer.cpp
 OBJS            = $(SRC:.cpp=.o)
 DEPS            = $(GLFW_LIB)
 LIBDIRS        += -L$(GLFW_DIR)
 
 CXX             = g++
 LD              = g++
-CFLAGS         += -std=c++11 -I$(TOPDIR) -I$(GLFW_INC) -MMD -O3
-CFLAGS         += -Wall -Wextra -Wshadow -Wundef -Wunused -Wno-strict-aliasing
+CFLAGS         += -std=c++11 -I$(SRC_DIR) -I$(3RD_PART_DIR) -I$(GLFW_INC) -MMD -O3
+CFLAGS         += -Wall -Wextra -Wshadow -Wundef -Wunused -Wno-strict-aliasing -Wno-deprecated-copy
 CFLAGS         += -Wno-attributes -Wno-type-limits -Wno-implicit-fallthrough
 CPPFLAGS       += $(CFLAGS)
 LDFLAGS        += $(LIBDIRS) $(LIBS)
