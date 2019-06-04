@@ -18,38 +18,42 @@
  */
 
 #include <iostream>
+#include <codecvt>
+#include <locale>
 #include "Renderer.h"
+
+using namespace std;
 
 #define UNUSED(expr) do { (void)(expr); } while (0)
 
 Renderer* render;
 
-// Override std::cout and std::cerr to get messages sent to the Visual Studio output window
+// Override cout and cerr to get messages sent to the Visual Studio output window
 #if defined(_WIN32)
-class vs_stream : std::basic_streambuf<char, std::char_traits<char>>
+class vs_stream : basic_streambuf<char, char_traits<char>>
 {
 protected:
-    std::streamsize xsputn (const std::char_traits<char>::char_type* s, std::streamsize n)
+    streamsize xsputn (const char_traits<char>::char_type* s, streamsize n)
     {
         OutputDebugStringA(s);
         return n;
     }
 
-    std::char_traits<char>::int_type overflow (std::char_traits<char>::int_type c)
+    char_traits<char>::int_type overflow (char_traits<char>::int_type c)
     {
         char str[2]; str[0] = c; str[1] = 0;
         OutputDebugStringA(str);
-        return std::char_traits<char>::int_type(c);
+        return char_traits<char>::int_type(c);
     }
 };
 
-typedef std::basic_streambuf<char, std::char_traits<char>> sbuf_char;
+typedef basic_streambuf<char, char_traits<char>> sbuf_char;
 #endif
 
 // GLFW callbacks
 void glfw_error(int error, const char* description)
 {
-    std::cerr << "GLFW[" << error << "]: " << description << "\n";
+    cerr << "GLFW[" << error << "]: " << description << "\n";
 }
 
 void glfw_resize(GLFWwindow* window, int w, int h)
@@ -69,17 +73,17 @@ void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     render->Paint();
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    std::cout << "Ojda - OpenGL Viewer\n";
+    cout << "Ojda - OpenGL Viewer\n";
 
     glfwSetErrorCallback(glfw_error);
     if (glfwInit() == GL_FALSE) {
-        std::cerr << "Could not initialize GLFW.\n";
+        cerr << "Could not initialize GLFW.\n";
         return -1;
     }
 
-    render = new Renderer("Ojda - OpenGL Viewer", glfw_resize, "res/Cube.obj");
+    render = new Renderer("Ojda - OpenGL Viewer", glfw_resize, (argc >= 2) ? argv[1] : "res/Cube.obj");
     GLFWwindow* window = render->getWindow();
     glfwSetScrollCallback(window, glfw_scroll_callback);
 
@@ -103,16 +107,26 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     UNUSED(lpCmdLine);
     UNUSED(nCmdShow);
     vs_stream vs;
-    sbuf_char *cout_buf = std::cout.rdbuf();
-    sbuf_char *cerr_buf = std::cerr.rdbuf();
+    sbuf_char *cout_buf = cout.rdbuf();
+    sbuf_char *cerr_buf = cerr.rdbuf();
 
-    std::cout.rdbuf((sbuf_char *)&vs);
-    std::cerr.rdbuf((sbuf_char *)&vs);
+    cout.rdbuf((sbuf_char *)&vs);
+    cerr.rdbuf((sbuf_char *)&vs);
 
-    int r = main();
+    // Process Unicode parameters
+    typedef int (CDECL *__wgetmainargs_t)(int*, wchar_t***, wchar_t***, int, int*);
+    __wgetmainargs_t __wgetmainargs = (__wgetmainargs_t)GetProcAddress(GetModuleHandleA("msvcrt"), "__wgetmainargs");
+    int argc = 0, si = 0;
+    wchar_t **wenv, **wargv;
+    __wgetmainargs(&argc, &wargv, &wenv, 1, &si);
+    char** argv = (char**)calloc(argc, sizeof(char*));
+    wstring_convert<codecvt_utf8<wchar_t>> utf8_conv;
+    for (int i = 0; i < argc; i++)
+        argv[i] = const_cast<char*>(utf8_conv.to_bytes(wargv[i]).c_str());
+    int r = main(argc, argv);
 
-    std::cout.rdbuf(cout_buf);
-    std::cerr.rdbuf(cerr_buf);
+    cout.rdbuf(cout_buf);
+    cerr.rdbuf(cerr_buf);
 
     return r;
 }

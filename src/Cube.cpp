@@ -27,7 +27,7 @@ Cube::Cube(const char* filename)
         // Only load the first Mesh for now
         mMesh = Loader.LoadedMeshes[0];
     } else {
-        std::cerr << "Could not load '" << filename << "'\n";
+        cerr << "Could not load '" << filename << "'\n";
     }
 }
 

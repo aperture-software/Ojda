@@ -38,7 +38,7 @@ LIBDIRS        += -L$(GLFW_DIR)
 CXX             = g++
 LD              = g++
 CFLAGS         += -std=c++11 -I$(SRC_DIR) -I$(3RD_PART_DIR) -I$(GLFW_INC) -MMD -O3
-CFLAGS         += -Wall -Wextra -Wshadow -Wundef -Wunused -Wno-strict-aliasing -Wno-deprecated-copy
+CFLAGS         += -Wall -Wextra -Wshadow -Wundef -Wunused -Wno-strict-aliasing -Wno-deprecated-copy -Wno-cast-function-type
 CFLAGS         += -Wno-attributes -Wno-type-limits -Wno-implicit-fallthrough
 CPPFLAGS       += $(CFLAGS)
 LDFLAGS        += $(LIBDIRS) $(LIBS)
