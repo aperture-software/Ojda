@@ -59,8 +59,8 @@ void Camera::Zoom(float delta)
 {
     // Just change the field of view for zoom
     mFovY += delta;
-    if (mFovY < 20.0f)
-        mFovY = 20.0f;
+    if (mFovY < 5.0f)
+        mFovY = 5.0f;
     if (mFovY > 179.0f)
         mFovY = 179.0f;
 }

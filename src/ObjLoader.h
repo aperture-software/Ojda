@@ -59,39 +59,19 @@ namespace ObjLoader
 {
     namespace math
     {
-        // Vector3 Cross Product
-        Vector3f CrossV3(const Vector3f a, const Vector3f b)
-        {
-            return Vector3f(a.y() * b.z() - a.z() * b.y(),
-                a.z() * b.x() - a.x() * b.z(),
-                a.x() * b.y() - a.y() * b.x());
-        }
-
-        // Vector3 Magnitude Calculation
-        float MagnitudeV3(const Vector3f in)
-        {
-            return (sqrtf(powf(in.x(), 2) + powf(in.y(), 2) + powf(in.z(), 2)));
-        }
-
-        // Vector3 DotProduct
-        float DotV3(const Vector3f a, const Vector3f b)
-        {
-            return (a.x() * b.x()) + (a.y() * b.y()) + (a.z() * b.z());
-        }
-
         // Angle between 2 Vector3 Objects
         float AngleBetweenV3(const Vector3f a, const Vector3f b)
         {
-            float angle = DotV3(a, b);
-            angle /= (MagnitudeV3(a) * MagnitudeV3(b));
-            return angle = acosf(angle);
+            float angle = a.dot(b);
+            angle /= a.norm() * b.norm();
+            return acosf(angle);
         }
 
         // Projection Calculation of a onto b
         Vector3f ProjV3(const Vector3f a, const Vector3f b)
         {
-            Vector3f bn = b / MagnitudeV3(b);
-            return bn * DotV3(a, bn);
+            Vector3f bn = b / b.norm();
+            return bn * a.dot(bn);
         }
     }
 
@@ -100,24 +80,17 @@ namespace ObjLoader
         // A test to see if P1 is on the same side as P2 of a line segment ab
         bool SameSide(Vector3f p1, Vector3f p2, Vector3f a, Vector3f b)
         {
-            Vector3f cp1 = math::CrossV3(b - a, p1 - a);
-            Vector3f cp2 = math::CrossV3(b - a, p2 - a);
-
-            if (math::DotV3(cp1, cp2) >= 0)
-                return true;
-            else
-                return false;
+            Vector3f cp1 = (b - a).cross(p1 - a);
+            Vector3f cp2 = (b - a).cross(p2 - a);
+            return (cp1.dot(cp2) >= 0);
         }
 
-        // Generate a cross produect normal for a triangle
+        // Generate a cross product normal for a triangle
         Vector3f GenTriNormal(Vector3f t1, Vector3f t2, Vector3f t3)
         {
             Vector3f u = t2 - t1;
             Vector3f v = t3 - t1;
-
-            Vector3f normal = math::CrossV3(u, v);
-
-            return normal;
+            return u.cross(v);
         }
 
         // Check to see if a Vector3 Point is within a 3 Vector3 Triangle
@@ -138,11 +111,8 @@ namespace ObjLoader
             Vector3f proj = math::ProjV3(point, n);
 
             // If the distance from the triangle to the point is 0
-            //	it lies on the triangle
-            if (math::MagnitudeV3(proj) == 0)
-                return true;
-            else
-                return false;
+            // it lies on the triangle
+            return (proj.norm() == 0);
         }
 
         // Split a String into a string array at a given token
@@ -450,11 +420,7 @@ namespace ObjLoader
                 }
             }
 
-            if (LoadedMeshes.empty() && LoadedVertices.empty() && LoadedIndices.empty()) {
-                return false;
-            } else {
-                return true;
-            }
+            return (!LoadedMeshes.empty() && !LoadedVertices.empty() && !LoadedIndices.empty());
         }
 
         vector<Mesh> LoadedMeshes;
@@ -546,7 +512,7 @@ namespace ObjLoader
                 Vector3f A = oVerts[0].Position - oVerts[1].Position;
                 Vector3f B = oVerts[2].Position - oVerts[1].Position;
 
-                Vector3f normal = math::CrossV3(A, B);
+                Vector3f normal = A.cross(B);
 
                 for (size_t i = 0; i < oVerts.size(); i++) {
                     oVerts[i].Normal = normal;
@@ -829,11 +795,7 @@ namespace ObjLoader
 
             // Test to see if anything was loaded
             // If not return false
-            if (LoadedMaterials.empty())
-                return false;
-            // If so return true
-            else
-                return true;
+            return (!LoadedMaterials.empty());
         }
     };
 }

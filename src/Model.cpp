@@ -25,8 +25,8 @@ Model::Model(const char* filename)
 {
     ObjLoader::Loader Loader;
     if (Loader.LoadFile(filename)) {
-        // Only load the first Mesh for now
-        mMesh = Loader.LoadedMeshes[0];
+        for (Mesh m : Loader.LoadedMeshes)
+            mMesh.push_back(m);
     } else {
         cerr << "Could not load '" << filename << "'\n";
     }
@@ -35,43 +35,31 @@ Model::Model(const char* filename)
 BoundingBox Model::getBoundingBox() const
 {
     BoundingBox bb = { {-1.0f, -1.0f, -1.0f} , {1.0f, 1.0f, 1.0f} };
-    for (Vertex v : mMesh.Vertices) {
-        bb.min.x() = (std::min)(bb.min.x(), v.Position.x());
-        bb.min.y() = (std::min)(bb.min.y(), v.Position.y());
-        bb.min.z() = (std::min)(bb.min.z(), v.Position.z());
-        bb.max.x() = (std::max)(bb.max.x(), v.Position.x());
-        bb.max.y() = (std::max)(bb.max.y(), v.Position.y());
-        bb.max.z() = (std::max)(bb.max.z(), v.Position.z());
+    for (Mesh m : mMesh) {
+        for (Vertex v : m.Vertices) {
+            bb.min.x() = (std::min)(bb.min.x(), v.Position.x());
+            bb.min.y() = (std::min)(bb.min.y(), v.Position.y());
+            bb.min.z() = (std::min)(bb.min.z(), v.Position.z());
+            bb.max.x() = (std::max)(bb.max.x(), v.Position.x());
+            bb.max.y() = (std::max)(bb.max.y(), v.Position.y());
+            bb.max.z() = (std::max)(bb.max.z(), v.Position.z());
+        }
     }
     return bb;
 }
 
-Vector3f Model::getNormal(const size_t index) const
-{
-    if (index > this->mMesh.Indices.size())
-        return Vector3f();
-
-    Vector3f v[3];
-    for (size_t j = 0; j < 3; j++)
-        v[j] = mMesh.Vertices[mMesh.Indices[3 * index + j]].Position;
-    v[1] -= v[0];
-    v[2] -= v[0];
-    Vector3f n = v[1].cross(v[2]);
-    n.normalize();
-
-    return n;
-}
-
 void Model::glDraw() const
 {
-    for (size_t i = 0; i < mMesh.Indices.size() / 3; i++) {
-        glBegin(GL_TRIANGLES);
-        Vector3f n = this->getNormal(i);
-        glNormal3f(n.x(), n.y(), n.z());
-        for (size_t j = 0; j < 3; j++) {
-            Vector3f v = mMesh.Vertices[mMesh.Indices[3 * i + j]].Position;
-            glVertex3f(v.x(), v.y(), v.z());
+    for (Mesh m : mMesh) {
+        for (size_t i = 0; i < m.Indices.size() / 3; i++) {
+            glBegin(GL_TRIANGLES);
+            Vector3f n = m.getNormal(i);
+            glNormal3f(n.x(), n.y(), n.z());
+            for (size_t j = 0; j < 3; j++) {
+                Vector3f v = m.Vertices[m.Indices[3 * i + j]].Position;
+                glVertex3f(v.x(), v.y(), v.z());
+            }
+            glEnd();
         }
-        glEnd();
     }
 }

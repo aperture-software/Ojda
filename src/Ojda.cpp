@@ -69,7 +69,7 @@ void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
     UNUSED(xoffset);
     glfwMakeContextCurrent(window);
-    render->Zoom((float)(3.0 * yoffset));
+    render->Zoom((float)(-3.0 * yoffset));
     render->Paint();
 }
 

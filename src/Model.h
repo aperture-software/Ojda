@@ -33,10 +33,8 @@
 
 class Model {
 private:
-    Mesh mMesh;
-    Vector3f getNormal(const size_t index) const;
+    vector<Mesh> mMesh;
 public:
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
     Model(const char* filename);
     BoundingBox getBoundingBox() const;
     void glDraw() const;
