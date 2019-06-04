@@ -12,6 +12,7 @@
 *.patch
 *.pdb
 *.suo
+*.zip
 arm
 arm64
 x64

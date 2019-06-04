@@ -17,68 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "ObjLoader.h"
 #include "Cube.h"
 
-Cube::Cube()
+Cube::Cube(const char* filename)
 {
-    Matrix3f m;
-    m << 1.0, -1.0, -1.0,
-        1.0, -1.0, 1.0,
-        -1.0, -1.0, -1.0;
-    this->mFace.push_back(m);
-    m << 1.0, 1.0, -1.0,
-        -1.0, 1.0, -1.0,
-        1.0, 1.0, 1.0;
-    this->mFace.push_back(m);
-    m << 1.0, -1.0, -1.0,
-        1.0, 1.0, -1.0,
-        1.0, -1.0, 1.0;
-    this->mFace.push_back(m);
-    m << 1.0, -1.0, 1.0,
-        1.0, 1.0, 1.0,
-        -1.0, -1.0, 1.0;
-    this->mFace.push_back(m);
-    m << -1.0, -1.0, 1.0,
-        -1.0, 1.0, 1.0,
-        -1.0, -1.0, -1.0;
-    this->mFace.push_back(m);
-    m << 1.0, 1.0, -1.0,
-        1.0, -1.0, -1.0,
-        -1.0, 1.0, -1.0;
-    this->mFace.push_back(m);
-    m << 1.0, -1.0, 1.0,
-        -1.0, -1.0, 1.0,
-        -1.0, -1.0, -1.0;
-    this->mFace.push_back(m);
-    m << -1.0, 1.0, -1.0,
-        -1.0, 1.0, 1.0,
-        1.0, 1.0, 1.0;
-    this->mFace.push_back(m);
-    m << 1.0, 1.0, -1.0,
-        1.0, 1.0, 1.0,
-        1.0, -1.0, 1.0;
-    this->mFace.push_back(m);
-    m << 1.0, 1.0, 1.0,
-        -1.0, 1.0, 1.0,
-        -1.0, -1.0, 1.0;
-    this->mFace.push_back(m);
-    m << -1.0, 1.0, 1.0,
-        -1.0, 1.0, -1.0,
-        -1.0, -1.0, -1.0;
-    this->mFace.push_back(m);
-    m << 1.0, -1.0, -1.0,
-        -1.0, -1.0, -1.0,
-        -1.0, 1.0, -1.0;
-    this->mFace.push_back(m);
+    ObjLoader::Loader Loader;
+    if (Loader.LoadFile(filename)) {
+        // Only load the first Mesh for now
+        mMesh = Loader.LoadedMeshes[0];
+    } else {
+        std::cerr << "Could not load '" << filename << "'\n";
+    }
 }
 
 Vector3f Cube::getNormal(const size_t index) const
 {
-    if (index > this->mFace.size())
+    if (index > this->mMesh.Indices.size())
         return Vector3f();
 
-    Matrix3f m = this->mFace[index];
-    Vector3f v[3] = { m.row(0), m.row(1), m.row(2) };
+    Vector3f v[3];
+    for (size_t j = 0; j < 3; j++)
+        v[j] = mMesh.Vertices[mMesh.Indices[3 * index + j]].Position;
     v[1] -= v[0];
     v[2] -= v[0];
     Vector3f n = v[1].cross(v[2]);
@@ -89,12 +49,14 @@ Vector3f Cube::getNormal(const size_t index) const
 
 void Cube::glDraw() const
 {
-    for (size_t i = 0; i < mFace.size(); i++) {
+    for (size_t i = 0; i < mMesh.Indices.size() / 3; i++) {
         glBegin(GL_TRIANGLES);
         Vector3f n = this->getNormal(i);
         glNormal3f(n.x(), n.y(), n.z());
-        for (int j = 0; j < 3; j++)
-            glVertex3f(this->mFace[i].row(j).x(), this->mFace[i].row(j).y(), this->mFace[i].row(j).z());
+        for (size_t j = 0; j < 3; j++) {
+            Vector3f v = mMesh.Vertices[mMesh.Indices[3 * i + j]].Position;
+            glVertex3f(v.x(), v.y(), v.z());
+        }
         glEnd();
     }
 }

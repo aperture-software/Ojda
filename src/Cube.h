@@ -28,16 +28,15 @@
 #else
 #include <GL/glu.h>
 #endif
-#include <Eigen/Eigen>
 
-using namespace Eigen;
+#include "Mesh.h"
 
 class Cube {
 private:
+    Mesh mMesh;
     Vector3f getNormal(const size_t index) const;
-    std::vector<Matrix3f> mFace;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Cube();
+    Cube(const char* filename);
     void glDraw() const;
 };

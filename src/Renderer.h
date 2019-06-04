@@ -40,7 +40,7 @@ private:
 public:
     int mWindowWidth = 1680, mWindowHeight = 1050;
 
-    Renderer(const char* title, GLFWwindowsizefun fResize);
+    Renderer(const char* title, GLFWwindowsizefun fResize, const char* filename);
     void Paint();
     void Rotate(float xpos, float ypos, bool update_only);
     void Zoom(float delta);

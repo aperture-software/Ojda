@@ -45,72 +45,18 @@
 
 #pragma once
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include <iostream>
+#include <fstream>
+#include <string>
 
-#include <Eigen/Eigen>
+#include "Mesh.h"
 
-using namespace std;
-using namespace Eigen;
-
-#define OBJL_CONSOLE_OUTPUT
+//#define OBJL_CONSOLE_OUTPUT
 
 namespace ObjLoader
 {
-    struct Vertex
-    {
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        Vector3f Position;
-        Vector3f Normal;
-        Vector2f TextureCoordinate;
-    };
-
-    struct Material
-    {
-        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        Material()
-        {
-            name;
-            Ns = 0.0f;
-            Ni = 0.0f;
-            d = 0.0f;
-            illum = 0;
-        }
-
-        string name;        // Material Name
-        Vector3f Ka;        // Ambient Color
-        Vector3f Kd;        // Diffuse Color
-        Vector3f Ks;        // Specular Color
-        float Ns;           // Specular Exponent
-        float Ni;           // Optical Density
-        float d;            // Dissolve
-        int illum;          // Illumination
-        string map_Ka;      // Ambient Texture Map
-        string map_Kd;      // Diffuse Texture Map
-        string map_Ks;      // Specular Texture Map
-        string map_Ns;      // Specular Hightlight Map
-        string map_d;       // Alpha Texture Map
-        string map_bump;    // Bump Map
-    };
-
-    struct Mesh
-    {
-        Mesh() { }
-        Mesh(vector<Vertex>& _Vertices, vector<size_t>& _Indices)
-        {
-            Vertices = _Vertices;
-            Indices = _Indices;
-        }
-        string MeshName;                // Mesh Name
-        vector<Vertex> Vertices;        // Vertex List
-        vector<size_t> Indices;         // Index List
-        Material MeshMaterial;          // Material
-    };
-
     namespace math
     {
         // Vector3 Cross Product
@@ -413,7 +359,6 @@ namespace ObjLoader
 
                         indnum = ((LoadedVertices.size()) - vVerts.size()) + iIndices[i];
                         LoadedIndices.push_back(indnum);
-
                     }
                 }
                 // Get Mesh Material Name
@@ -535,7 +480,7 @@ namespace ObjLoader
             // For every given vertex do this
             for (size_t i = 0; i < sface.size(); i++) {
                 // See What type the vertex is.
-                int vtype;
+                int vtype = 0;
 
                 algorithm::split(sface[i], svert, "/");
 
@@ -566,41 +511,31 @@ namespace ObjLoader
                 // Calculate and store the vertex
                 switch (vtype) {
                 case 1: // P
-                {
                     vVert.Position = algorithm::getElement(iPositions, svert[0]);
                     vVert.TextureCoordinate = Vector2f(0, 0);
                     noNormal = true;
                     oVerts.push_back(vVert);
                     break;
-                }
                 case 2: // P/T
-                {
                     vVert.Position = algorithm::getElement(iPositions, svert[0]);
                     vVert.TextureCoordinate = algorithm::getElement(iTCoords, svert[1]);
                     noNormal = true;
                     oVerts.push_back(vVert);
                     break;
-                }
                 case 3: // P//N
-                {
                     vVert.Position = algorithm::getElement(iPositions, svert[0]);
                     vVert.TextureCoordinate = Vector2f(0, 0);
                     vVert.Normal = algorithm::getElement(iNormals, svert[2]);
                     oVerts.push_back(vVert);
                     break;
-                }
                 case 4: // P/T/N
-                {
                     vVert.Position = algorithm::getElement(iPositions, svert[0]);
                     vVert.TextureCoordinate = algorithm::getElement(iTCoords, svert[1]);
                     vVert.Normal = algorithm::getElement(iNormals, svert[2]);
                     oVerts.push_back(vVert);
                     break;
-                }
                 default:
-                {
                     break;
-                }
                 }
             }
 
@@ -690,7 +625,7 @@ namespace ObjLoader
                                 oIndices.push_back(j);
                         }
 
-                        Vector3f tempVec;
+                        Vector3f tempVec(0.0f, 0.0f, 0.0f);
                         for (size_t j = 0; j < tVerts.size(); j++) {
                             if (tVerts[j].Position != pCur.Position
                                 && tVerts[j].Position != pPrev.Position

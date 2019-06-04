@@ -24,7 +24,7 @@
 #include "stb/stb_image.h"
 #include "Icon.h"
 
-Renderer::Renderer(const char* title, GLFWwindowsizefun fResize)
+Renderer::Renderer(const char* title, GLFWwindowsizefun fResize, const char* filename = "cube.obj")
 {
     GLFWimage images[1];
     images[0].pixels = stbi_load_from_memory(icon, sizeof(icon), &images[0].width, &images[0].height, 0, 4);
@@ -36,7 +36,7 @@ Renderer::Renderer(const char* title, GLFWwindowsizefun fResize)
 
     BoundingBoxf bbox = { {-1.0, -1.0, -1.0}, {1.0, 1.0, 1.0} };
     mCamera = new Camera(bbox);
-    mModel = new Cube();
+    mModel = new Cube(filename);
 }
 
 void Renderer::Paint()

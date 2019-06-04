@@ -72,13 +72,14 @@ void glfw_scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 int main()
 {
     std::cout << "Ojda - OpenGL Viewer\n";
+
     glfwSetErrorCallback(glfw_error);
     if (glfwInit() == GL_FALSE) {
         std::cerr << "Could not initialize GLFW.\n";
         return -1;
     }
 
-    render = new Renderer("Ojda - OpenGL Viewer", glfw_resize);
+    render = new Renderer("Ojda - OpenGL Viewer", glfw_resize, "res/Cube.obj");
     GLFWwindow* window = render->getWindow();
     glfwSetScrollCallback(window, glfw_scroll_callback);
 
