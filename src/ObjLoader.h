@@ -45,17 +45,10 @@
 
 #pragma once
 
-// Iostream - STD I/O Library
 #include <iostream>
-
-// Vector - STD Vector/Array Library
-#include <vector>
-
-// String - STD String Library
-#include <string>
-
-// fStream - STD File I/O Library
 #include <fstream>
+#include <vector>
+#include <string>
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -64,33 +57,21 @@
 using namespace std;
 using namespace Eigen;
 
-// Print progress to console while loading (large models)
 #define OBJL_CONSOLE_OUTPUT
 
-// Namespace: OBJL
-//
-// Description: The namespace that holds eveyrthing that
-// is needed and used for the OBJ Model Loader
-namespace objl
+namespace ObjLoader
 {
-    // Structure: Vertex
-    //
-    // Description: Model Vertex object that holds
-    // a Position, Normal, and Texture Coordinate
     struct Vertex
     {
-        // Position Vector
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         Vector3f Position;
-
-        // Normal Vector
         Vector3f Normal;
-
-        // Texture Coordinate Vector
         Vector2f TextureCoordinate;
     };
 
     struct Material
     {
+        EIGEN_MAKE_ALIGNED_OPERATOR_NEW
         Material()
         {
             name;
@@ -100,68 +81,36 @@ namespace objl
             illum = 0;
         }
 
-        // Material Name
-        string name;
-        // Ambient Color
-        Vector3f Ka;
-        // Diffuse Color
-        Vector3f Kd;
-        // Specular Color
-        Vector3f Ks;
-        // Specular Exponent
-        float Ns;
-        // Optical Density
-        float Ni;
-        // Dissolve
-        float d;
-        // Illumination
-        int illum;
-        // Ambient Texture Map
-        string map_Ka;
-        // Diffuse Texture Map
-        string map_Kd;
-        // Specular Texture Map
-        string map_Ks;
-        // Specular Hightlight Map
-        string map_Ns;
-        // Alpha Texture Map
-        string map_d;
-        // Bump Map
-        string map_bump;
+        string name;        // Material Name
+        Vector3f Ka;        // Ambient Color
+        Vector3f Kd;        // Diffuse Color
+        Vector3f Ks;        // Specular Color
+        float Ns;           // Specular Exponent
+        float Ni;           // Optical Density
+        float d;            // Dissolve
+        int illum;          // Illumination
+        string map_Ka;      // Ambient Texture Map
+        string map_Kd;      // Diffuse Texture Map
+        string map_Ks;      // Specular Texture Map
+        string map_Ns;      // Specular Hightlight Map
+        string map_d;       // Alpha Texture Map
+        string map_bump;    // Bump Map
     };
 
-    // Structure: Mesh
-    //
-    // Description: A Simple Mesh Object that holds
-    // a name, a vertex list, and an index list
     struct Mesh
     {
-        // Default Constructor
-        Mesh()
-        {
-
-        }
-        // Variable Set Constructor
-        Mesh(vector<Vertex>& _Vertices, vector<unsigned int>& _Indices)
+        Mesh() { }
+        Mesh(vector<Vertex>& _Vertices, vector<size_t>& _Indices)
         {
             Vertices = _Vertices;
             Indices = _Indices;
         }
-        // Mesh Name
-        string MeshName;
-        // Vertex List
-        vector<Vertex> Vertices;
-        // Index List
-        vector<unsigned int> Indices;
-
-        // Material
-        Material MeshMaterial;
+        string MeshName;                // Mesh Name
+        vector<Vertex> Vertices;        // Vertex List
+        vector<size_t> Indices;         // Index List
+        Material MeshMaterial;          // Material
     };
 
-    // Namespace: Math
-    //
-    // Description: The namespace that holds all of the math
-    // functions need for OBJL
     namespace math
     {
         // Vector3 Cross Product
@@ -200,10 +149,6 @@ namespace objl
         }
     }
 
-    // Namespace: Algorithm
-    //
-    // Description: The namespace that holds all of the
-    // Algorithms needed for OBJL
     namespace algorithm
     {
         // A test to see if P1 is on the same side as P2 of a line segment ab
@@ -261,14 +206,14 @@ namespace objl
 
             string temp;
 
-            for (int i = 0; i < int(in.size()); i++) {
+            for (size_t i = 0; i < in.size(); i++) {
                 string test = in.substr(i, token.size());
 
                 if (test == token) {
                     if (!temp.empty()) {
                         out.push_back(temp);
                         temp.clear();
-                        i += (int)token.size() - 1;
+                        i += token.size() - 1;
                     } else {
                         out.push_back("");
                     }
@@ -325,31 +270,17 @@ namespace objl
         }
     }
 
-    // Class: Loader
-    //
-    // Description: The OBJ Model Loader
     class Loader
     {
     public:
-        // Default Constructor
-        Loader()
-        {
-
-        }
+        Loader() { }
         ~Loader()
         {
             LoadedMeshes.clear();
         }
 
-        // Load a file into the loader
-        //
-        // If file is loaded return true
-        //
-        // If the file is unable to be found
-        // or unable to be loaded return false
         bool LoadFile(string Path)
         {
-            // If the file is not an .obj file return false
             if (Path.substr(Path.size() - 4, 4) != ".obj")
                 return false;
 
@@ -368,7 +299,7 @@ namespace objl
             vector<Vector3f> Normals;
 
             vector<Vertex> Vertices;
-            vector<unsigned int> Indices;
+            vector<size_t> Indices;
 
             vector<string> MeshMatNames;
 
@@ -467,22 +398,20 @@ namespace objl
                     GenVerticesFromRawOBJ(vVerts, Positions, TCoords, Normals, curline);
 
                     // Add Vertices
-                    for (int i = 0; i < int(vVerts.size()); i++) {
+                    for (size_t i = 0; i < vVerts.size(); i++) {
                         Vertices.push_back(vVerts[i]);
-
                         LoadedVertices.push_back(vVerts[i]);
                     }
 
-                    vector<unsigned int> iIndices;
-
+                    vector<size_t> iIndices;
                     VertexTriangluation(iIndices, vVerts);
 
                     // Add Indices
-                    for (int i = 0; i < int(iIndices.size()); i++) {
-                        unsigned int indnum = (unsigned int)((Vertices.size()) - vVerts.size()) + iIndices[i];
+                    for (size_t i = 0; i < iIndices.size(); i++) {
+                        size_t indnum = ((Vertices.size()) - vVerts.size()) + iIndices[i];
                         Indices.push_back(indnum);
 
-                        indnum = (unsigned int)((LoadedVertices.size()) - vVerts.size()) + iIndices[i];
+                        indnum = ((LoadedVertices.size()) - vVerts.size()) + iIndices[i];
                         LoadedIndices.push_back(indnum);
 
                     }
@@ -528,8 +457,8 @@ namespace objl
 
                     string pathtomat = "";
 
-                    if (temp.size() != 1) {
-                        for (int i = 0; i < temp.size() - 1; i++) {
+                    if (temp.size() > 1) {
+                        for (size_t i = 0; i < temp.size() - 1; i++) {
                             pathtomat += temp[i] + "/";
                         }
                     }
@@ -551,7 +480,6 @@ namespace objl
 #endif
 
             // Deal with last mesh
-
             if (!Indices.empty() && !Vertices.empty()) {
                 // Create Mesh
                 tempMesh = Mesh(Vertices, Indices);
@@ -564,12 +492,12 @@ namespace objl
             file.close();
 
             // Set Materials for each Mesh
-            for (int i = 0; i < MeshMatNames.size(); i++) {
+            for (size_t i = 0; i < MeshMatNames.size(); i++) {
                 string matname = MeshMatNames[i];
 
                 // Find corresponding material name in loaded materials
                 // when found copy material variables into mesh material
-                for (int j = 0; j < LoadedMaterials.size(); j++) {
+                for (size_t j = 0; j < LoadedMaterials.size(); j++) {
                     if (LoadedMaterials[j].name == matname) {
                         LoadedMeshes[i].MeshMaterial = LoadedMaterials[j];
                         break;
@@ -584,18 +512,14 @@ namespace objl
             }
         }
 
-        // Loaded Mesh Objects
         vector<Mesh> LoadedMeshes;
-        // Loaded Vertex Objects
         vector<Vertex> LoadedVertices;
-        // Loaded Index Positions
-        vector<unsigned int> LoadedIndices;
-        // Loaded Material Objects
+        vector<size_t> LoadedIndices;
         vector<Material> LoadedMaterials;
 
     private:
-        // Generate vertices from a list of positions, 
-        //	tcoords, normals and a face line
+        // Generate vertices from a list of positions,
+        // tcoords, normals and a face line
         void GenVerticesFromRawOBJ(vector<Vertex>& oVerts,
             const vector<Vector3f>& iPositions,
             const vector<Vector2f>& iTCoords,
@@ -609,7 +533,7 @@ namespace objl
             bool noNormal = false;
 
             // For every given vertex do this
-            for (int i = 0; i < int(sface.size()); i++) {
+            for (size_t i = 0; i < sface.size(); i++) {
                 // See What type the vertex is.
                 int vtype;
 
@@ -680,24 +604,24 @@ namespace objl
                 }
             }
 
-            // take care of missing normals
-            // these may not be truly acurate but it is the 
-            // best they get for not compiling a mesh with normals	
+            // Take care of missing normals.
+            // These may not be truly acurate but it is the best we
+            // can get for a mesh that wasn't compiled with normals.
             if (noNormal) {
                 Vector3f A = oVerts[0].Position - oVerts[1].Position;
                 Vector3f B = oVerts[2].Position - oVerts[1].Position;
 
                 Vector3f normal = math::CrossV3(A, B);
 
-                for (int i = 0; i < int(oVerts.size()); i++) {
+                for (size_t i = 0; i < oVerts.size(); i++) {
                     oVerts[i].Normal = normal;
                 }
             }
         }
 
         // Triangulate a list of vertices into a face by printing
-        //	inducies corresponding with triangles within it
-        void VertexTriangluation(vector<unsigned int>& oIndices,
+        // indices corresponding with triangles within it.
+        void VertexTriangluation(vector<size_t>& oIndices,
             const vector<Vertex>& iVerts)
         {
             // If there are 2 or less verts,
@@ -719,7 +643,7 @@ namespace objl
 
             while (true) {
                 // For every vertex
-                for (int i = 0; i < int(tVerts.size()); i++) {
+                for (size_t i = 0; i < tVerts.size(); i++) {
                     // pPrev = the previous vertex in the list
                     Vertex pPrev;
                     if (i == 0) {
@@ -743,7 +667,7 @@ namespace objl
                     // if so this is the last triangle
                     if (tVerts.size() == 3) {
                         // Create a triangle from pCur, pPrev, pNext
-                        for (int j = 0; j < int(tVerts.size()); j++) {
+                        for (size_t j = 0; j < tVerts.size(); j++) {
                             if (iVerts[j].Position == pCur.Position)
                                 oIndices.push_back(j);
                             if (iVerts[j].Position == pPrev.Position)
@@ -757,7 +681,7 @@ namespace objl
                     }
                     if (tVerts.size() == 4) {
                         // Create a triangle from pCur, pPrev, pNext
-                        for (int j = 0; j < int(iVerts.size()); j++) {
+                        for (size_t j = 0; j < iVerts.size(); j++) {
                             if (iVerts[j].Position == pCur.Position)
                                 oIndices.push_back(j);
                             if (iVerts[j].Position == pPrev.Position)
@@ -767,7 +691,7 @@ namespace objl
                         }
 
                         Vector3f tempVec;
-                        for (int j = 0; j < int(tVerts.size()); j++) {
+                        for (size_t j = 0; j < tVerts.size(); j++) {
                             if (tVerts[j].Position != pCur.Position
                                 && tVerts[j].Position != pPrev.Position
                                 && tVerts[j].Position != pNext.Position) {
@@ -777,7 +701,7 @@ namespace objl
                         }
 
                         // Create a triangle from pCur, pPrev, pNext
-                        for (int j = 0; j < int(iVerts.size()); j++) {
+                        for (size_t j = 0; j < iVerts.size(); j++) {
                             if (iVerts[j].Position == pPrev.Position)
                                 oIndices.push_back(j);
                             if (iVerts[j].Position == pNext.Position)
@@ -791,13 +715,14 @@ namespace objl
                     }
 
                     // If Vertex is not an interior vertex
-                    float angle = math::AngleBetweenV3(pPrev.Position - pCur.Position, pNext.Position - pCur.Position) * (180.0f / (float)M_PI);
+                    float angle = math::AngleBetweenV3(pPrev.Position - pCur.Position,
+                        pNext.Position - pCur.Position) * (180.0f / (float)M_PI);
                     if (angle <= 0 && angle >= 180)
                         continue;
 
                     // If any vertices are within this triangle
                     bool inTri = false;
-                    for (int j = 0; j < int(iVerts.size()); j++) {
+                    for (size_t j = 0; j < iVerts.size(); j++) {
                         if (algorithm::inTriangle(iVerts[j].Position, pPrev.Position, pCur.Position, pNext.Position)
                             && iVerts[j].Position != pPrev.Position
                             && iVerts[j].Position != pCur.Position
@@ -810,7 +735,7 @@ namespace objl
                         continue;
 
                     // Create a triangle from pCur, pPrev, pNext
-                    for (int j = 0; j < int(iVerts.size()); j++) {
+                    for (size_t j = 0; j < iVerts.size(); j++) {
                         if (iVerts[j].Position == pCur.Position)
                             oIndices.push_back(j);
                         if (iVerts[j].Position == pPrev.Position)
@@ -820,7 +745,7 @@ namespace objl
                     }
 
                     // Delete pCur from the list
-                    for (int j = 0; j < int(tVerts.size()); j++) {
+                    for (size_t j = 0; j < tVerts.size(); j++) {
                         if (tVerts[j].Position == pCur.Position) {
                             tVerts.erase(tVerts.begin() + j);
                             break;
