@@ -26,17 +26,16 @@
 
 Renderer::Renderer(const char* title, GLFWwindowsizefun fResize, const char* filename = "cube.obj")
 {
-    GLFWimage images[1];
-    images[0].pixels = stbi_load_from_memory(icon, sizeof(icon), &images[0].width, &images[0].height, 0, 4);
+    GLFWimage image;
+    image.pixels = stbi_load_from_memory(icon, sizeof(icon), &image.width, &image.height, 0, 4);
 
     mWindow = glfwCreateWindow(mWindowWidth, mWindowHeight, title, NULL, NULL);
-    glfwSetWindowIcon(mWindow, 1, images);
+    glfwSetWindowIcon(mWindow, 1, &image);
     glfwSetWindowSizeCallback(mWindow, fResize);
     glfwMakeContextCurrent(mWindow);
 
-    BoundingBoxf bbox = { {-1.0, -1.0, -1.0}, {1.0, 1.0, 1.0} };
-    mCamera = new Camera(bbox);
-    mModel = new Cube(filename);
+    mModel = new Model(filename);
+    mCamera = new Camera(mModel->getBoundingBox());
 }
 
 void Renderer::Paint()

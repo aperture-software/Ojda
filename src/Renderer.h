@@ -25,14 +25,14 @@
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
-#include "Cube.h"
+#include "Model.h"
 
 using namespace Eigen;
 
 class Renderer
 {
 private:
-    Cube* mModel;
+    Model* mModel;
     Camera* mCamera;
     GLFWwindow* mWindow;
     float mMouseX, mMouseY;

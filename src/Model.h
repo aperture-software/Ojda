@@ -31,12 +31,13 @@
 
 #include "Mesh.h"
 
-class Cube {
+class Model {
 private:
     Mesh mMesh;
     Vector3f getNormal(const size_t index) const;
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Cube(const char* filename);
+    Model(const char* filename);
+    BoundingBox getBoundingBox() const;
     void glDraw() const;
 };

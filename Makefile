@@ -30,7 +30,7 @@ GLFW_DIR        = $(3RD_PART_DIR)/glfw
 GLFW_INC        = $(GLFW_DIR)/include
 GLFW_LIB        = $(GLFW_DIR)/liglfw3.a
 TARGET          = Ojda$(EXE)
-SRC             = $(SRC_DIR)/Camera.cpp $(SRC_DIR)/Cube.cpp $(SRC_DIR)/Ojda.cpp $(SRC_DIR)/Renderer.cpp
+SRC             = $(SRC_DIR)/Camera.cpp $(SRC_DIR)/Model.cpp $(SRC_DIR)/Ojda.cpp $(SRC_DIR)/Renderer.cpp
 OBJS            = $(SRC:.cpp=.o)
 DEPS            = $(GLFW_LIB)
 LIBDIRS        += -L$(GLFW_DIR)

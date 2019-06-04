@@ -59,10 +59,16 @@ struct Vertex
     Vector2f TextureCoordinate;
 };
 
+struct BoundingBox {
+    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+    Vector3f min;
+    Vector3f max;
+};
+
 struct Material
 {
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-        Material()
+    Material()
     {
         Ns = 0.0f;
         Ni = 0.0f;

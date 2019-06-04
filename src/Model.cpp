@@ -17,10 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "ObjLoader.h"
-#include "Cube.h"
+#include "Model.h"
 
-Cube::Cube(const char* filename)
+Model::Model(const char* filename)
 {
     ObjLoader::Loader Loader;
     if (Loader.LoadFile(filename)) {
@@ -31,7 +32,21 @@ Cube::Cube(const char* filename)
     }
 }
 
-Vector3f Cube::getNormal(const size_t index) const
+BoundingBox Model::getBoundingBox() const
+{
+    BoundingBox bb = { {-1.0f, -1.0f, -1.0f} , {1.0f, 1.0f, 1.0f} };
+    for (Vertex v : mMesh.Vertices) {
+        bb.min.x() = (std::min)(bb.min.x(), v.Position.x());
+        bb.min.y() = (std::min)(bb.min.y(), v.Position.y());
+        bb.min.z() = (std::min)(bb.min.z(), v.Position.z());
+        bb.max.x() = (std::max)(bb.max.x(), v.Position.x());
+        bb.max.y() = (std::max)(bb.max.y(), v.Position.y());
+        bb.max.z() = (std::max)(bb.max.z(), v.Position.z());
+    }
+    return bb;
+}
+
+Vector3f Model::getNormal(const size_t index) const
 {
     if (index > this->mMesh.Indices.size())
         return Vector3f();
@@ -47,7 +62,7 @@ Vector3f Cube::getNormal(const size_t index) const
     return n;
 }
 
-void Cube::glDraw() const
+void Model::glDraw() const
 {
     for (size_t i = 0; i < mMesh.Indices.size() / 3; i++) {
         glBegin(GL_TRIANGLES);

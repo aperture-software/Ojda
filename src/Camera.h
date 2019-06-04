@@ -18,15 +18,9 @@
  */
 #pragma once
 
-#include <Eigen/Eigen>
+#include "Mesh.h"
 
 using namespace Eigen;
-
-typedef struct {
-    EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Vector3f min;
-    Vector3f max;
-} BoundingBoxf;
 
 class Camera
 {
@@ -47,7 +41,7 @@ private:
 
 public:
     EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    Camera(const BoundingBoxf bbox);
+    Camera(const BoundingBox bbox);
     void Perspective(float ar) const;
     void LookAt();
     void Zoom(float delta);

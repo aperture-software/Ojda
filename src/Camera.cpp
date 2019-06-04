@@ -30,7 +30,7 @@
 
 #include "Camera.h"
 
-Camera::Camera(const BoundingBoxf bbox)
+Camera::Camera(const BoundingBox bbox)
 {
     mBoundingSphereRadius = (bbox.min - bbox.max).norm() / 2.0f;
     mCenter = (bbox.min + bbox.max) / 2.0f;
