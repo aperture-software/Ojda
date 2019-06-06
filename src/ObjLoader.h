@@ -57,28 +57,25 @@
 
 namespace ObjLoader
 {
-    namespace math
+    namespace algorithm
     {
-        // Angle between 2 Vector3 Objects
-        float AngleBetweenV3(const Vector3f a, const Vector3f b)
+        // Compute the angle between 2 vectors
+        float getAngle(const Vector3f a, const Vector3f b)
         {
             float angle = a.dot(b);
             angle /= a.norm() * b.norm();
             return acosf(angle);
         }
 
-        // Projection Calculation of a onto b
-        Vector3f ProjV3(const Vector3f a, const Vector3f b)
+        // Project point a onto vector b
+        Vector3f project(const Vector3f a, const Vector3f b)
         {
             Vector3f bn = b / b.norm();
             return bn * a.dot(bn);
         }
-    }
 
-    namespace algorithm
-    {
         // A test to see if P1 is on the same side as P2 of a line segment ab
-        bool SameSide(Vector3f p1, Vector3f p2, Vector3f a, Vector3f b)
+        bool isOnSameSide(Vector3f p1, Vector3f p2, Vector3f a, Vector3f b)
         {
             Vector3f cp1 = (b - a).cross(p1 - a);
             Vector3f cp2 = (b - a).cross(p2 - a);
@@ -86,7 +83,7 @@ namespace ObjLoader
         }
 
         // Generate a cross product normal for a triangle
-        Vector3f GenTriNormal(Vector3f t1, Vector3f t2, Vector3f t3)
+        Vector3f getNormal(Vector3f t1, Vector3f t2, Vector3f t3)
         {
             Vector3f u = t2 - t1;
             Vector3f v = t3 - t1;
@@ -94,21 +91,21 @@ namespace ObjLoader
         }
 
         // Check to see if a Vector3 Point is within a 3 Vector3 Triangle
-        bool inTriangle(Vector3f point, Vector3f tri1, Vector3f tri2, Vector3f tri3)
+        bool isInTriangle(Vector3f point, Vector3f tri1, Vector3f tri2, Vector3f tri3)
         {
             // Test to see if it is within an infinite prism that the triangle outlines.
-            bool within_tri_prisim = SameSide(point, tri1, tri2, tri3) && SameSide(point, tri2, tri1, tri3)
-                && SameSide(point, tri3, tri1, tri2);
+            bool within_tri_prisim = isOnSameSide(point, tri1, tri2, tri3) && isOnSameSide(point, tri2, tri1, tri3)
+                && isOnSameSide(point, tri3, tri1, tri2);
 
             // If it isn't it will never be on the triangle
             if (!within_tri_prisim)
                 return false;
 
             // Calulate Triangle's Normal
-            Vector3f n = GenTriNormal(tri1, tri2, tri3);
+            Vector3f n = getNormal(tri1, tri2, tri3);
 
             // Project the point onto this normal
-            Vector3f proj = math::ProjV3(point, n);
+            Vector3f proj = project(point, n);
 
             // If the distance from the triangle to the point is 0
             // it lies on the triangle
@@ -616,7 +613,7 @@ namespace ObjLoader
                     }
 
                     // If Vertex is not an interior vertex
-                    float angle = math::AngleBetweenV3(pPrev.Position - pCur.Position,
+                    float angle = algorithm::getAngle(pPrev.Position - pCur.Position,
                         pNext.Position - pCur.Position) * (180.0f / (float)M_PI);
                     if (angle <= 0 && angle >= 180)
                         continue;
@@ -624,7 +621,7 @@ namespace ObjLoader
                     // If any vertices are within this triangle
                     bool inTri = false;
                     for (size_t j = 0; j < iVerts.size(); j++) {
-                        if (algorithm::inTriangle(iVerts[j].Position, pPrev.Position, pCur.Position, pNext.Position)
+                        if (algorithm::isInTriangle(iVerts[j].Position, pPrev.Position, pCur.Position, pNext.Position)
                             && iVerts[j].Position != pPrev.Position
                             && iVerts[j].Position != pCur.Position
                             && iVerts[j].Position != pNext.Position) {

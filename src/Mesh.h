@@ -101,22 +101,6 @@ struct Mesh
         Indices = _Indices;
     }
 
-    Vector3f getNormal(const size_t index) const
-    {
-        if (index > Indices.size())
-            return Vector3f();
-
-        Vector3f v[3];
-        for (size_t j = 0; j < 3; j++)
-            v[j] = Vertices[Indices[3 * index + j]].Position;
-        v[1] -= v[0];
-        v[2] -= v[0];
-        Vector3f n = v[1].cross(v[2]);
-        n.normalize();
-
-        return n;
-    }
-
     string MeshName;                // Mesh Name
     vector<Vertex> Vertices;        // Vertex List
     vector<size_t> Indices;         // Index List

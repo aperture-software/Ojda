@@ -53,10 +53,10 @@ void Model::glDraw() const
     for (Mesh m : mMesh) {
         for (size_t i = 0; i < m.Indices.size() / 3; i++) {
             glBegin(GL_TRIANGLES);
-            Vector3f n = m.getNormal(i);
-            glNormal3f(n.x(), n.y(), n.z());
             for (size_t j = 0; j < 3; j++) {
+                Vector3f n = m.Vertices[m.Indices[3 * i + j]].Normal;
                 Vector3f v = m.Vertices[m.Indices[3 * i + j]].Position;
+                glNormal3f(n.x(), n.y(), n.z());
                 glVertex3f(v.x(), v.y(), v.z());
             }
             glEnd();

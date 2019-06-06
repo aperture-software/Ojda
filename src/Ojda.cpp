@@ -83,7 +83,7 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    render = new Renderer("Ojda - OpenGL Viewer", glfw_resize, (argc >= 2) ? argv[1] : "res/Cube.obj");
+    render = new Renderer("Ojda - OpenGL Viewer", glfw_resize, (argc >= 2) ? argv[1] : "res/Dragon.obj");
     GLFWwindow* window = render->getWindow();
     glfwSetScrollCallback(window, glfw_scroll_callback);
 
